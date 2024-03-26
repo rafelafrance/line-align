@@ -82,4 +82,4 @@ env/
 venv/
 
 # Data
-fonts/
+data/
