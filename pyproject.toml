@@ -37,6 +37,9 @@ where = ["."]
 include = ["line_align"]
 namespaces = false
 
+[tool.cibuildwheel]
+before-all = "uname -a"
+
 [tool.ruff]
 target-version = "py311"
 

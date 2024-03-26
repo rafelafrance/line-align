@@ -1,4 +1,3 @@
-"""Test the levenshtein function in the line_align module."""
 import unittest
 
 import cppimport.import_hook  # noqa: F401
@@ -88,8 +87,7 @@ class TestDistance(unittest.TestCase):
     def test_distance_26(self):
         self.assertEqual(
             self.line.levenshtein(
-                "Commelinaceae Commelina virginica",
-                "Commelina virginica"
+                "Commelinaceae Commelina virginica", "Commelina virginica"
             ),
             14,
         )

@@ -1,4 +1,3 @@
-"""Test the distance function in the line_align module."""
 import unittest
 
 import cppimport.import_hook  # noqa: F401

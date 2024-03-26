@@ -3,17 +3,16 @@
 # line-align ![CI](https://github.com/rafelafrance/line-align/workflows/CI/badge.svg)
 
 1. [Description](#Description)
-2. [Alignment example](#Example)
-3. [Install](#Install)
-4. [Test](#Test)
+2. [Install](#Install)
+3. [Test](#Test)
 
 ## Description
 
-I had several version of the "same" string coming from different sources, All of the strings were slightly different, and with no indication of which one, if any, is correct. So I decided to take a page from the bioinformatics and use a multiple sequence alignment algorithm on the text lines to find a single "best" representation of the true string.
+The problem: I had several version of the "same" string coming from different sources, Although they were all supposed to be identical they were actually all slightly different, and with no indication of which one, if any, was correct. To find the "correct" string, I decided to use an algorithm bioinformatics and use a multiple sequence alignment (MSA) algorithm on the text lines to find a single representation of the "true" string.
 
-The Multiple Sequence Alignment (MSA) algorithm that is directly analogous to the ones used for biological sequences but instead of using a PAM or BLOSUM substitution matrix we use a visual similarity matrix. Visual similarity depends on the font so an exact distance is not always feasible. Instead, we use a rough similarity score that ranges from +2 for characters that are identical, to -2 where the characters are wildly different like a period "." and a "W". The default gap penalty is -3 and the default gap extension penalty is -0.5.
+The Multiple Sequence Alignment algorithm I am using is directly analogous to the ones used for biological sequences, but instead of using a PAM or BLOSUM substitution matrix I use a visual similarity matrix. Visual similarity of characters depends on the font so an exact distance is not always feasible. Instead, I use a rough similarity score that ranges from +2 for characters that are identical, to -2 where the characters are wildly different like a period "." and a "W". I also use a gap open penalty and a gap extend penalty just like the bioinformatics algorithm.
 
-For example, if given these strings:
+For example, if given these 4 similar strings:
 
 ```
 MOJAVE DESERT, PROVIDENCE MTS.: canyon above
@@ -30,6 +29,14 @@ E⋄. MOJAVE DESERT , PROVIDENCE MTS . : canyon ⋄above
 E⋄⋄ MOJAVE DESERT ⋄⋄PROVTDENCE MTS⋄. # canyon ⋄above
 Be ‘MOJAVE DESERT⋄, PROVIDENCE ⋄⋄⋄⋄⋄⋄⋄⋄canyon “above
 ```
+
+I can use a character (or word) selection algorithm to build a single "correct" string from this alignment. The result may look like:
+
+```
+E. MOJAVE DESERT, PROVIDENCE MTS.: canyon above
+```
+
+## API
 
 ## Install
 
