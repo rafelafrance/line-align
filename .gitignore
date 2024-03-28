@@ -26,6 +26,7 @@ __pycache__/
 
 # C extensions
 *.so
+.rendered*
 
 # Distribution / packaging
 .Python
@@ -83,3 +84,4 @@ venv/
 
 # Data
 data/
+old/

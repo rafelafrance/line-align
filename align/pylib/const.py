@@ -1,6 +1,6 @@
 from pathlib import Path
 
-CHAR_DB = Path() / "line_align" / "pylib" / "char_sub_matrix.sqlite"
+CHAR_DB = Path() / "align" / "pylib" / "char_sub_matrix.sqlite"
 
 # #########################################################################
 CHARS = r"""

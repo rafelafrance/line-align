@@ -2,8 +2,8 @@ import unittest
 
 import cppimport.import_hook  # noqa: F401
 
-from line_align.pylib import char_sub_matrix as subs
-from line_align.pylib import line_align_py  # noqa: F401
+from align.pylib import char_sub_matrix as subs
+from align.cpplib import line_align_py  # noqa: F401
 
 
 class TestAlign(unittest.TestCase):

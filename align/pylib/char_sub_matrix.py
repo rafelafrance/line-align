@@ -3,9 +3,9 @@ from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
 from pathlib import Path
 
-from line_align.pylib import const, db
+from align.pylib import const, db
 
-FONT = Path() / "fonts" / "NotoSerif-Regular.ttf"
+FONT = Path() / "align" / "fonts" / "NotoSerif-Regular.ttf"
 BASE_FONT_SIZE = 36
 FONT_POINT = 24  # Size the char inside the image
 IMAGE_SIZE = 40  # Size of the image that contains a char

@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-import line_align.pylib.char_sub_matrix as sub
+import align.pylib.char_sub_matrix as sub
 
 
 class TestCharSubMatrix(unittest.TestCase):
