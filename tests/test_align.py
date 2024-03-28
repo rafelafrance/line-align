@@ -1,13 +1,12 @@
 import unittest
 
-import cppimport.import_hook  # noqa: F401
 
-from align.pylib import char_sub_matrix as subs
+from align import char_sub_matrix
 from align.cpplib import line_align_py  # noqa: F401
 
 
 class TestAlign(unittest.TestCase):
-    matrix = subs.select_char_sub_matrix()
+    matrix = char_sub_matrix.get()
 
     def setUp(self):
         two_chars = {"aa": 0.0, "ab": -1.0, "bb": 0.0}

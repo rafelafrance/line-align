@@ -1,9 +1,9 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools", "setuptools-scm", "pybind11"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "line-align"
+name = "line_align"
 version = "0.1.0"
 description = ""
 license = {file = "LICENSE"}
@@ -27,15 +27,18 @@ optional-dependencies.dev = [
 ]
 
 [project.scripts]
-char-sub-matrix = "align.char_sub_matrix:main"
+char-sub-matrix = "align.build_char_sub_matrix:main"
 
 [tool.setuptools]
-py-modules = []
+include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["align", "align/cpplib"]
+include = ["align"]
 namespaces = false
+
+[tool.setuptools.package-data]
+line_align = ["*.sqlite"]
 
 [tool.cibuildwheel]
 before-all = "uname -a"

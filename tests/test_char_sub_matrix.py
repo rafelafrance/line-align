@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-import align.pylib.char_sub_matrix as sub
+from align import char_sub_matrix
 
 
 class TestCharSubMatrix(unittest.TestCase):
@@ -21,7 +21,7 @@ class TestCharSubMatrix(unittest.TestCase):
                 [0.0, 0.0, 0.0],
             ]
         )
-        self.assertEqual(sub.get_max_iou(pix1, pix2), 1.0)
+        self.assertEqual(char_sub_matrix.get_max_iou(pix1, pix2), 1.0)
 
     def test_get_max_iou_02(self):
         pix1 = np.array(
@@ -38,7 +38,7 @@ class TestCharSubMatrix(unittest.TestCase):
                 [0.0, 0.0, 0.0],
             ]
         )
-        self.assertEqual(sub.get_max_iou(pix1, pix2), 1.0)
+        self.assertEqual(char_sub_matrix.get_max_iou(pix1, pix2), 1.0)
 
     def test_get_max_iou_03(self):
         pix1 = np.array(
@@ -55,4 +55,4 @@ class TestCharSubMatrix(unittest.TestCase):
                 [0.0, 0.0, 0.0],
             ]
         )
-        self.assertEqual(sub.get_max_iou(pix1, pix2), 0.2)
+        self.assertEqual(char_sub_matrix.get_max_iou(pix1, pix2), 0.2)
