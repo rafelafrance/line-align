@@ -40,8 +40,8 @@ namespaces = false
 line_align = ["*.sqlite"]
 
 [tool.cibuildwheel]
-build = "cp311*"
-before-build = "uname -a"
+build-verbosity = 1
+test-command = "python -m unittest discover"
 
 [tool.setuptools_scm]
 
