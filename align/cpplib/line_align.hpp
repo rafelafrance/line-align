@@ -18,11 +18,6 @@
 #include <unordered_map>
 #include <vector>
 
-/**
- * The character used to represent gaps in alignment output.
- */
-const char32_t gap_char = U'⋄';
-
 const std::unordered_map<std::u32string, float> noSubs = {};
 
 // The only reason for the struct is so that I can setup the substitution matrix once
@@ -36,11 +31,13 @@ struct LineAlign {
      * the cost of substituting the two characters.
      * @param gap The gap open penalty for alignments. This is typically negative.
      * @param skew The gap extension penalty for the alignments. Also negative.
+     * @param gap_char The character used to represent gaps in alignment output.
     */
     LineAlign(
         const std::unordered_map<std::u32string, float>& substitutions = noSubs,
         float gap = -3.0,
-        float skew = -0.5
+        float skew = -0.5,
+        char32_t gap_char = U'⋄'
     );
 
     /**
@@ -94,4 +91,5 @@ private:
     std::unordered_map<std::u32string, float> substitutions;
     float gap;
     float skew;
+    char32_t gap_char;
 };

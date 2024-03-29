@@ -27,12 +27,14 @@ std::u32string convert_8_32(const std::string &bytes) {
 LineAlign::LineAlign(
     const std::unordered_map<std::u32string, float>& substitutions,
     float gap,
-    float skew
+    float skew,
+    char32_t gap_char
 )
 {
     this->substitutions = substitutions;
     this->gap = gap;
     this->skew = skew;
+    this->gap_char = gap_char;
 }
 
 
@@ -155,7 +157,7 @@ LineAlign::align(const std::vector<std::u32string> &strings) const {
                     char32_t results_char = results[k][rows - row];
                     char32_t strings_char = strings[s][cols - col];
 
-                    if (results_char == gap_char) {
+                    if (results_char == this->gap_char) {
                         continue;
                     }
 
@@ -218,11 +220,11 @@ LineAlign::align(const std::vector<std::u32string> &strings) const {
                 for (size_t k = 0; k < results.size(); ++k) {
                     new_results[k] += results[k][rows - row];
                 }
-                new_string += gap_char;
+                new_string += this->gap_char;
                 --row;
             } else {
                 for (size_t k = 0; k < results.size(); ++k) {
-                    new_results[k] += gap_char;
+                    new_results[k] += this->gap_char;
                 }
                 new_string += strings[s][cols - col];
                 --col;

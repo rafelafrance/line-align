@@ -12,6 +12,10 @@ The problem: I had several version of the "same" string coming from different so
 
 The Multiple Sequence Alignment algorithm I am using is directly analogous to the ones used for biological sequences, but instead of using a PAM or BLOSUM substitution matrix I use a visual similarity matrix. Visual similarity of characters depends on the font so an exact distance is not always feasible. Instead, I use a rough similarity score that ranges from +2 for characters that are identical, to -2 where the characters are wildly different like a period "." and a "W". I also use a gap open penalty and a gap extend penalty just like the bioinformatics algorithm.
 
+These are naive implementations of string algorithms based on Gusfield, 1997. I.e. There's _plenty_ of room for improvement.
+
+**NOTE**: The functions are geared towards OCR errors and not human errors. OCR engines will often mistake one letter for another or drop/add a character (particularly from the ends) but will seldom transpose characters, which humans do often. Therefore: I do not consider transpositions in the Levenshtein or Needleman Wunsch distances, and substitutions are based on visual similarity, etc.
+
 For example, if given these 4 similar strings:
 
 ```

@@ -7,13 +7,12 @@ namespace py = pybind11;
 PYBIND11_MODULE(line_align_py, m) {
     m.doc() = "Align multiple strings.";
 
-    m.attr("gap_char") = gap_char;
-
     py::class_<LineAlign>(m, "LineAlign")
-        .def(py::init<const std::unordered_map<std::u32string, float>&, float, float>(),
+        .def(py::init<const std::unordered_map<std::u32string, float>&, float, float, char32_t>(),
              py::arg("substitutions") = noSubs,
              py::arg("gap") = -2.0,
-             py::arg("skew") = -2.0)
+             py::arg("skew") = -2.0,
+             py::arg("gap_char") = U'⋄')
         .def("align", &LineAlign::align,
              "Get the alignment string for a pair of strings.",
              py::arg("strings"))
