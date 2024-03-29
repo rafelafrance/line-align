@@ -13,7 +13,6 @@ readme = "README.md"
 dependencies = [
     "Pillow",
     "cibuildwheel",
-    "cppimport",
     "numpy",
     "pybind11",
     "tqdm",

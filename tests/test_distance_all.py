@@ -1,8 +1,6 @@
 import unittest
 
-import cppimport.import_hook  # noqa: F401
-
-from align.cpplib import line_align_py  # noqa: F401
+import line_align_py
 
 
 class TestDistanceAll(unittest.TestCase):
