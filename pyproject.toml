@@ -42,6 +42,7 @@ line_align = ["*.sqlite"]
 
 [tool.cibuildwheel]
 build = "cp311*"
+before-build = "uname -a"
 
 [tool.setuptools_scm]
 
