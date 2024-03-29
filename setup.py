@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 from glob import glob
-from setuptools import setup
+
 from pybind11.setup_helpers import Pybind11Extension
+from setuptools import setup
 
 ext_modules = [
     Pybind11Extension(
-        "line_align_py",
-        sorted(glob("align/cpplib/*.cpp")),
+        "line_align",
+        sorted(glob("char_matrix/cpplib/*.cpp")),  # noqa: PTH207
     ),
 ]
 

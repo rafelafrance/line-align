@@ -1,13 +1,13 @@
-from contextlib import contextmanager
 import sqlite3
+from contextlib import contextmanager
+from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
-from pathlib import Path
 
-# TODO This whole module needs a scrub
-# TODO Move most of these consts to class vars
+# TODO(rafe): This whole module needs a scrub
+# TODO(rafe): Move most of these consts to class vars
 
 CHAR_DB = Path(__file__).parent / "char_sub_matrix.sqlite"
 
@@ -23,7 +23,7 @@ CHARS = r"""
     """
 CHARS = "".join(["\n", " ", *CHARS.split()])
 
-FONT = Path() / "fonts" / "NotoSerif-Regular.ttf"  # TODO Make this an argument
+FONT = Path() / "fonts" / "NotoSerif-Regular.ttf"  # TODO(rafe): Make this an argument
 
 BASE_FONT_SIZE = 36
 FONT_POINT = 24  # Size the char inside the image
@@ -156,8 +156,7 @@ def calc_scores(old_chars, new_chars, matrix, image_size, font):
             matrix[(char1.char, char2.char)] = {"score": score, "sub": sub}
 
 
-def get_sub(score):
-    # These values are all MAGIC TODO
+def get_sub(score):  # TODO(rafe): These values are all MAGIC
     if score >= 0.7:  # noqa: PLR2004
         sub = 1.0
     elif score >= 0.5:  # noqa: PLR2004
@@ -176,7 +175,7 @@ def get_max_iou(pix1, pix2):
         for x in range(pix2.shape[1]):
             rolled = np.roll(pix2, (y, x), axis=(0, 1))
             overlap = pix1 + rolled
-            union = np.sum(overlap > 0.0)  # noqa: PLR2004
+            union = np.sum(overlap > 0.0)
             inter = np.sum(overlap == 2.0)  # noqa: PLR2004
             curr_iou = inter / union if union else 0.0
             max_iou = max(max_iou, curr_iou)

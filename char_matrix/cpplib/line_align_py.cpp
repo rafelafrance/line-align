@@ -14,7 +14,7 @@ PYBIND11_MODULE(line_align_py, m) {
              py::arg("skew") = -2.0,
              py::arg("gap_char") = U'⋄')
         .def("align", &LineAlign::align,
-             "Get the alignment string for a pair of strings.",
+             "Get a multiple sequence alignment for a list of strings.",
              py::arg("strings"))
         .def("levenshtein", &LineAlign::levenshtein,
              "Get the levenshtein distance for 2 strings.")

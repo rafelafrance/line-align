@@ -2,7 +2,7 @@ import unittest
 
 import line_align_py
 
-from align import char_sub_matrix
+from char_matrix import char_sub_matrix
 
 
 class TestAlign(unittest.TestCase):

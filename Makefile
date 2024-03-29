@@ -18,7 +18,7 @@ install: venv
 dev: venv
 	source $(VENV)/bin/activate
 	$(PIP_INSTALL) -U $(BASE)
-	$(PIP_INSTALL) -e ".[dev]"
+	$(PIP_INSTALL) -e .[dev]
 	pre-commit install
 
 venv:
