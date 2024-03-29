@@ -12,16 +12,16 @@ requires-python = ">=3.11"
 readme = "README.md"
 dependencies = [
     "Pillow",
+    "cibuildwheel",
+    "cppimport",
     "numpy",
+    "pybind11",
     "tqdm",
 ]
 optional-dependencies.dev = [
     "build",
-    "cibuildwheel",
-    "cppimport",
     "pre-commit",
     "pre-commit-hooks",
-    "pybind11",
     "ruff",
     "ruff-lsp",
 ]
@@ -41,7 +41,6 @@ namespaces = false
 line_align = ["*.sqlite"]
 
 [tool.cibuildwheel]
-before-all = "uname -a"
 
 [tool.setuptools_scm]
 
