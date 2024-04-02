@@ -95,7 +95,7 @@ std::vector<std::tuple<int64_t, int64_t, int64_t>>
 }
 
 // Structures supporting the align() function.
-enum TraceDir { none, diag, up, left };
+enum TraceDir { none, diag, left, up };
 struct Trace {
     float val;
     float up;
@@ -110,22 +110,24 @@ typedef std::vector<std::vector<Trace>> TraceMatrix;
  * Building strings backwards in an attempt to prevent string copies in the backtrace loop.
  */
 std::vector<std::u32string>
-LineAlign::align(const std::vector<std::u32string> &strings) const {
-    if (strings.size() <= 1) {
-        return strings;
+LineAlign::align(const std::vector<std::u32string> &lines) const {
+    if (lines.size() <= 1) {
+        return lines;
     }
-    std::vector<std::u32string> results;
-    results.push_back(strings[0]);
+    std::vector<std::u32string> aligned;
+    aligned.push_back(lines[0]);
 
-    for (size_t s = 1; s < strings.size(); ++s) {
+    for (size_t ln = 1; ln < lines.size(); ++ln) {
         // Build the matrix
-        size_t rows = results[0].length();
-        size_t cols = strings[s].length();
+        size_t rows = aligned[0].length();
+        size_t cols = lines[ln].length();
+        size_t rows_p1 = rows + 1;
+        size_t cols_p1 = cols + 1;
 
-        TraceMatrix trace(rows + 1, std::vector<Trace>(cols + 1));
+        TraceMatrix trace(rows_p1, std::vector<Trace>(cols_p1));
 
         float penalty = this->gap;
-        for (size_t row = 1; row <= rows; ++row) {
+        for (size_t row = 1; row < rows_p1; ++row) {
             trace[row][0].val = penalty;
             trace[row][0].up = penalty;
             trace[row][0].left = penalty;
@@ -134,7 +136,7 @@ LineAlign::align(const std::vector<std::u32string> &strings) const {
         }
 
         penalty = this->gap;
-        for (size_t col = 1; col <= cols; ++col) {
+        for (size_t col = 1; col < cols_p1; ++col) {
             trace[0][col].val = penalty;
             trace[0][col].up = penalty;
             trace[0][col].left = penalty;
@@ -142,8 +144,8 @@ LineAlign::align(const std::vector<std::u32string> &strings) const {
             penalty += this->skew;
         }
 
-        for (size_t row = 1; row <= rows; ++row) {
-            for (size_t col = 1; col <= cols; ++col) {
+        for (size_t row = 1; row < rows_p1; ++row) {
+            for (size_t col = 1; col < cols_p1; ++col) {
                 Trace &cell = trace[row][col];
                 Trace &cell_up = trace[row - 1][col];
                 Trace &cell_left = trace[row][col - 1];
@@ -152,22 +154,22 @@ LineAlign::align(const std::vector<std::u32string> &strings) const {
                 cell.left = std::max({
                     cell_left.left + this->skew, cell_left.val + this->gap});
 
-                float diagonal = std::numeric_limits<float>::lowest();
-                for (size_t k = 0; k < results.size(); ++k) {
-                    char32_t results_char = results[k][rows - row];
-                    char32_t strings_char = strings[s][cols - col];
+                float diag_val = std::numeric_limits<float>::lowest();
+                for (size_t k = 0; k < aligned.size(); ++k) {
+                    char32_t aligned_char = aligned[k][rows - row];
+                    char32_t lines_char = lines[ln][cols - col];
 
-                    if (results_char == this->gap_char) {
+                    if (aligned_char == this->gap_char) {
                         continue;
                     }
 
-                    if (results_char > strings_char) {
-                        std::swap(strings_char, results_char);
+                    if (aligned_char > lines_char) {
+                        std::swap(lines_char, aligned_char);
                     }
 
                     std::u32string key = U"";
-                    key += results_char;
-                    key += strings_char;
+                    key += aligned_char;
+                    key += lines_char;
                     float value;
                     try {
                         value = this->substitutions.at(key);
@@ -178,29 +180,40 @@ LineAlign::align(const std::vector<std::u32string> &strings) const {
                             << "substitution matrix.";
                         throw std::invalid_argument(err.str());
                     }
-                    diagonal = value > diagonal ? value : diagonal;
+                    diag_val = value > diag_val ? value : diag_val;
                 }
-                diagonal += trace[row - 1][col - 1].val;
-                cell.val = std::max({diagonal, cell.up, cell.left});
+                diag_val += trace[row - 1][col - 1].val;
+                cell.val = std::max({diag_val, cell.up, cell.left});
 
-                if (cell.val == diagonal) {
+                if (cell.val == diag_val) {
                     cell.dir = diag;
                 } else if (cell.val == cell.up) {
                     cell.dir = up;
                 } else {
                     cell.dir = left;
                 }
+                std::cout << "(" << row << ", " << col << ") "
+                    << cell.val << " " << cell.up << " " << cell.left << " " << cell.dir
+                    << "\n";
             }
+        }
+
+        for (size_t row = 0; row < rows_p1; ++row) {
+            for (size_t col = 0; col < cols_p1; ++col) {
+                 Trace cell = trace[row][col];
+                 std::cout << cell.dir << " ";
+            }
+            std::cout << "\n";
         }
 
         // Trace-back
         int64_t row = rows;
         int64_t col = cols;
-        std::u32string new_string;
+        std::u32string new_line;
 
-        std::vector<std::u32string> new_results;
-        for (size_t k = 0; k < results.size(); ++k) {
-            new_results.push_back(U"");
+        std::vector<std::u32string> new_aligned;
+        for (size_t k = 0; k < aligned.size(); ++k) {
+            new_aligned.push_back(U"");
         }
 
         while (true) {
@@ -210,29 +223,29 @@ LineAlign::align(const std::vector<std::u32string> &strings) const {
             }
 
             if (cell.dir == diag) {
-                for (size_t k = 0; k < results.size(); ++k) {
-                    new_results[k] += results[k][rows - row];
+                for (size_t k = 0; k < aligned.size(); ++k) {
+                    new_aligned[k] += aligned[k][rows - row];
                 }
-                new_string += strings[s][cols - col];
+                new_line += lines[ln][cols - col];
                 --row;
                 --col;
             } else if (cell.dir == up) {
-                for (size_t k = 0; k < results.size(); ++k) {
-                    new_results[k] += results[k][rows - row];
+                for (size_t k = 0; k < aligned.size(); ++k) {
+                    new_aligned[k] += aligned[k][rows - row];
                 }
-                new_string += this->gap_char;
+                new_line += this->gap_char;
                 --row;
             } else {
-                for (size_t k = 0; k < results.size(); ++k) {
-                    new_results[k] += this->gap_char;
+                for (size_t k = 0; k < aligned.size(); ++k) {
+                    new_aligned[k] += this->gap_char;
                 }
-                new_string += strings[s][cols - col];
+                new_line += lines[ln][cols - col];
                 --col;
             }
         }
-        new_results.push_back(new_string);
-        results = new_results;
+        new_aligned.push_back(new_line);
+        aligned = new_aligned;
     }
 
-    return results;
+    return aligned;
 }

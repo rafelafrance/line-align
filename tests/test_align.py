@@ -1,8 +1,7 @@
 import unittest
 
-import line_align_py
-
-from char_matrix import char_sub_matrix
+from line_align import char_sub_matrix
+from line_align.align import LineAlign
 
 
 class TestAlign(unittest.TestCase):
@@ -10,7 +9,7 @@ class TestAlign(unittest.TestCase):
 
     def setUp(self):
         two_chars = {"aa": 0.0, "ab": -1.0, "bb": 0.0}
-        self.line = line_align_py.LineAlign(two_chars, -1.0, -1.0)
+        self.line = LineAlign(two_chars, -1.0, -1.0)
 
     def test_align_01(self):
         self.assertEqual(self.line.align(["aba", "aba"]), ["aba", "aba"])
@@ -49,7 +48,7 @@ class TestAlign(unittest.TestCase):
         self.assertEqual(self.line.align(["aab", "abb", "aba"]), ["aab", "abb", "aba"])
 
     def test_align_13(self):
-        line = line_align_py.LineAlign(substitutions=self.matrix)
+        line = LineAlign(substitutions=self.matrix)
         results = line.align(
             [
                 "MOJAVE DESERT, PROVIDENCE MTS.: canyon above",
@@ -61,15 +60,15 @@ class TestAlign(unittest.TestCase):
         self.assertEqual(
             results,
             [
-                "⋄⋄⋄⋄MOJAVE DESERT⋄, PROVIDENCE MTS⋄.⋄: canyon ⋄above",
+                "⋄⋄⋄⋄MOJAVE DESERT⋄, PROVIDENCE MTS.⋄⋄: canyon ⋄above",
                 "E⋄. MOJAVE DESERT , PROVIDENCE MTS . : canyon ⋄above",
-                "E⋄⋄ MOJAVE DESERT ⋄⋄PROVTDENCE MTS⋄. # canyon ⋄above",
+                "E⋄⋄ MOJAVE DESERT ⋄⋄PROVTDENCE MTS. #⋄ canyon ⋄above",
                 "Be ‘MOJAVE DESERT⋄, PROVIDENCE ⋄⋄⋄⋄⋄⋄⋄⋄canyon “above",
             ],
         )
 
     def test_align_14(self):
-        line = line_align_py.LineAlign(self.matrix)
+        line = LineAlign(self.matrix)
         results = line.align(
             [
                 "Johns Island Sta tion on",
@@ -89,7 +88,7 @@ class TestAlign(unittest.TestCase):
         )
 
     def test_align_15(self):
-        line = line_align_py.LineAlign(self.matrix)
+        line = LineAlign(self.matrix)
         results = line.align(
             [
                 "North Carolina NORTH CAROLINA Guilford County",
@@ -100,6 +99,6 @@ class TestAlign(unittest.TestCase):
             results,
             [
                 "North Carolina NORTH CAROLINA Guilford County",
-                "North Carolina ⋄O⋄T⋄ CAROLINA Guilford County",
+                "North Carolina ⋄OT⋄⋄ CAROLINA Guilford County",
             ],
         )

@@ -1,24 +1,21 @@
 import unittest
 
-import line_align_py
+from line_align.levenshtein import Distance, levenshtein_all
 
 
 class TestDistanceAll(unittest.TestCase):
-    def setUp(self):
-        self.line = line_align_py.LineAlign()
-
     def test_distance_all_01(self):
-        self.assertEqual(self.line.levenshtein_all(["aa", "bb"]), [(2, 0, 1)])
+        self.assertEqual(levenshtein_all(["aa", "bb"]), [Distance(2, 0, 1)])
 
     def test_distance_all_02(self):
         self.assertEqual(
-            self.line.levenshtein_all(["aa", "bb", "ab"]),
-            [(1, 0, 2), (1, 1, 2), (2, 0, 1)],
+            levenshtein_all(["aa", "bb", "ab"]),
+            [Distance(1, 0, 2), Distance(1, 1, 2), Distance(2, 0, 1)],
         )
 
     def test_distance_all_03(self):
         self.assertEqual(
-            self.line.levenshtein_all(
+            levenshtein_all(
                 [
                     "MOJAVE DESERT, PROVIDENCE MTS.: canyon above",
                     "E. MOJAVE DESERT , PROVIDENCE MTS . : canyon above",
@@ -26,5 +23,12 @@ class TestDistanceAll(unittest.TestCase):
                     "Be ‘MOJAVE DESERT, PROVIDENCE canyon “above",
                 ]
             ),
-            [(6, 0, 1), (6, 0, 2), (6, 1, 2), (11, 0, 3), (13, 1, 3), (13, 2, 3)],
+            [
+                Distance(6, 0, 1),
+                Distance(6, 0, 2),
+                Distance(6, 1, 2),
+                Distance(11, 0, 3),
+                Distance(13, 1, 3),
+                Distance(13, 2, 3),
+            ],
         )

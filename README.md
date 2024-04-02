@@ -29,7 +29,7 @@ The alignment may look like the following, depending on the MSA parameters. "⋄
 
 ```
 ⋄⋄⋄⋄MOJAVE DESERT⋄, PROVIDENCE MTS⋄.⋄: canyon ⋄above
-E⋄. MOJAVE DESERT , PROVIDENCE MTS . : canyon ⋄above
+E.⋄ MOJAVE DESERT , PROVIDENCE MTS . : canyon ⋄above
 E⋄⋄ MOJAVE DESERT ⋄⋄PROVTDENCE MTS⋄. # canyon ⋄above
 Be ‘MOJAVE DESERT⋄, PROVIDENCE ⋄⋄⋄⋄⋄⋄⋄⋄canyon “above
 ```

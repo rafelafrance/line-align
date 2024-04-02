@@ -6,8 +6,8 @@ from setuptools import setup
 
 ext_modules = [
     Pybind11Extension(
-        "line_align",
-        sorted(glob("char_matrix/cpplib/*.cpp")),  # noqa: PTH207
+        "line_align_py",
+        sorted(glob("line_align/cpplib/*.cpp")),  # noqa: PTH207
     ),
 ]
 

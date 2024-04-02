@@ -11,10 +11,10 @@ authors = [{name="Raphael LaFrance", email="raphael.lafrance@gmail.com"}]
 requires-python = ">=3.11"
 readme = "README.md"
 dependencies = [
+    # "cibuildwheel",
+    # "pybind11",
     "Pillow",
-    "cibuildwheel",
     "numpy",
-    "pybind11",
     "tqdm",
 ]
 optional-dependencies.dev = [
@@ -123,7 +123,7 @@ lint.ignore = [
     "PT009",  # Use a regular assert instead of unittest-style {assertion}
     "RET504",  # Unnecessary assignment to {name} before return statement
     "RUF001",  # String contains ambiguous {}. Did you mean {}?
-    "SIM114",  # Combine if branches using logical or operator
+    "RUF002",  # Docstring contains ambiguous quote character
     "SIM117",  # Use a single with statement with multiple contexts instead of nested with statements
     "SLF001",  # Private member accessed: {access}
     "T201",  # print found
