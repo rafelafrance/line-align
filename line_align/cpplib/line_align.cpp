@@ -192,18 +192,7 @@ LineAlign::align(const std::vector<std::u32string> &lines) const {
                 } else {
                     cell.dir = left;
                 }
-                std::cout << "(" << row << ", " << col << ") "
-                    << cell.val << " " << cell.up << " " << cell.left << " " << cell.dir
-                    << "\n";
             }
-        }
-
-        for (size_t row = 0; row < rows_p1; ++row) {
-            for (size_t col = 0; col < cols_p1; ++col) {
-                 Trace cell = trace[row][col];
-                 std::cout << cell.dir << " ";
-            }
-            std::cout << "\n";
         }
 
         // Trace-back
