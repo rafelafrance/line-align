@@ -1,6 +1,6 @@
 import unittest
 
-from line_align.levenshtein import Distance, levenshtein_all
+from line_align.pylib.levenshtein import Distance, levenshtein_all
 
 
 class TestDistanceAll(unittest.TestCase):

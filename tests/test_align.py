@@ -1,7 +1,7 @@
 import unittest
 
-from line_align import char_sub_matrix
-from line_align.align import LineAlign
+from line_align.pylib import char_sub_matrix
+from line_align.pylib.align import LineAlign
 
 
 class TestAlign(unittest.TestCase):

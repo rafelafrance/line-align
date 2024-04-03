@@ -3,7 +3,7 @@ import argparse
 import textwrap
 from pathlib import Path
 
-from line_align import char_sub_matrix as matrix
+from line_align.pylib import char_sub_matrix as matrix
 
 
 def main():

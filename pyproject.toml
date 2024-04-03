@@ -26,14 +26,14 @@ optional-dependencies.dev = [
 ]
 
 [project.scripts]
-char-sub-matrix = "align.build_char_sub_matrix:main"
+char-sub-matrix = "line_align.build_char_sub_matrix:main"
 
 [tool.setuptools]
 include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["align"]
+include = ["line_align"]
 namespaces = false
 
 [tool.setuptools.package-data]
