@@ -1,1 +1,3 @@
-include align/char_sub_matrix.sqlite
+include line_align/char_sub_matrix.sqlite
+include line_align/fonts/NotoSerif-Regular.ttf
+include line_align/fonts/SourceCodePro-Regular.ttf
