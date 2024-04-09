@@ -3,12 +3,10 @@ from contextlib import contextmanager
 from pathlib import Path
 
 import numpy as np
+from PIL import Image, ImageDraw, ImageFont
+from tqdm import tqdm
 
-# from PIL import Image, ImageDraw, ImageFont
-# from tqdm import tqdm
-
-# TODO(rafe): This whole module needs a scrub
-# TODO(rafe): Move most of these consts to class vars
+# TODO(rafe): This whole messy module needs a scrub
 
 CHAR_DB = Path(__file__).parent / "char_sub_matrix.sqlite"
 
@@ -24,14 +22,9 @@ CHARS = r"""
     """
 CHARS = "".join(["\n", " ", *CHARS.split()])
 
-# FONT = Path() / "fonts" / "NotoSerif-Regular.ttf"
-#
-# BASE_FONT_SIZE = 36
-# FONT_POINT = 24  # Size the char inside the image
-# IMAGE_SIZE = 40  # Size of the image that contains a char
-# CHAR_FONT = ImageFont.truetype(str(FONT), FONT_POINT)
-# THRESHOLD = 128
-# HALF = 2
+
+DEFAULT_FONT_SIZE = 36  # Font size in pixels
+DEFAULT_IMAGE_SIZE = 40  # Size of the image containing a char
 
 
 @contextmanager
@@ -50,47 +43,50 @@ class Char:
         self.char = char
         self.image_size = image_size
         self.font = font
-        # self.pix = self.char_pix()
-        # self.h, self.w = self.char_size()
+        self.pix = self.char_pix()
+        self.h, self.w = self.char_size()
 
-    # def char_pix(self):
-    #     """Put char pixels into a matrix."""
-    #     image = Image.new("L", (self.image_size, self.image_size), color="black")
-    #     draw = ImageDraw.Draw(image)
-    #     char = " " if self.char.isspace() else self.char
-    #     draw.text((0, 0), char, font=self.font, anchor="lt", fill="white")
-    #     pix = np.asarray(image.getdata()) > THRESHOLD
-    #     pix = pix.astype("float")
-    #     return pix
+    def char_pix(self):
+        """Put char pixels into a matrix."""
+        image = Image.new("L", (self.image_size, self.image_size), color="black")
+        draw = ImageDraw.Draw(image)
+        char = " " if self.char.isspace() else self.char
+        draw.text((0, 0), char, font=self.font, anchor="lt", fill="white")
+        threshold = 128  # Midway point of [0, 255]
+        pix = np.asarray(image.getdata()) > threshold
+        pix = pix.astype("float")
+        return pix
 
-    # def char_size(self):
-    #     """Get the size of the char image."""
-    #     nz = np.nonzero(self.pix)
-    #     if len(nz[0]) == 0:
-    #         return 0, 0
-    #     h = np.max(nz[0]) - np.min(nz[0]) + 1
-    #     w = np.max(nz[1]) - np.min(nz[1]) + 1
-    #     return h, w
+    def char_size(self):
+        """Get the size of the char image."""
+        nz = np.nonzero(self.pix)
+        if len(nz[0]) == 0:
+            return 0, 0
+        h = np.max(nz[0]) - np.min(nz[0]) + 1
+        w = np.max(nz[1]) - np.min(nz[1]) + 1
+        return h, w
 
-    # def center(self):
-    #     """Move a char image to the center of the image."""
-    #     y = (self.pix.shape[0] - self.h) // HALF
-    #     x = (self.pix.shape[1] - self.w) // HALF
-    #     self.pix = np.roll(self.pix, (y, x), axis=(0, 1))
+    def center(self):
+        """Move a char image to the center of the image."""
+        y = (self.pix.shape[0] - self.h) // 2
+        x = (self.pix.shape[1] - self.w) // 2
+        self.pix = np.roll(self.pix, (y, x), axis=(0, 1))
 
 
 # #####################################################################################
-# def add_chars(args):
-#     """Add characters to the character substitution matrix."""
-#     matrix = select_matrix(args.char_set)
-#
-#     old_chars = {k[0] for k in matrix}
-#     old_chars |= {k[1] for k in matrix}
-#
-#     new_chars = set(args.chars)
-#
-#     calc_scores(old_chars, new_chars, matrix, IMAGE_SIZE, CHAR_FONT)
-#     insert_matrix(matrix, args.char_set)
+def add_chars(char_set, new_chars, image_size, font_path, font_size):
+    """Add characters to the character substitution matrix."""
+    font = ImageFont.truetype(str(font_path), font_size)
+
+    matrix = select_matrix(char_set)
+
+    old_chars = {k[0] for k in matrix}
+    old_chars |= {k[1] for k in matrix}
+
+    new_chars = set(new_chars)
+
+    calc_scores(old_chars, new_chars, matrix, image_size, font)
+    insert_matrix(matrix, char_set)
 
 
 def select_matrix(char_set):
@@ -128,36 +124,36 @@ def insert_matrix(matrix, char_set):
         cxn.executemany(insert, batch)
 
 
-# def calc_scores(old_chars, new_chars, matrix, image_size, font):
-#     """
-#     Calculate character substitution values.
-#
-#    Substitution values go from 2 to -2. The cutoff values for converting a scores into
-#     substitution values are _magic_ constants.
-#     """
-#     all_chars = [Char(c, image_size, font) for c in sorted(old_chars | new_chars)]
-#
-#     for i, char1 in tqdm(enumerate(all_chars)):
-#         char1.center()
-#
-#         for char2 in all_chars[i:]:
-#             if char1.char not in new_chars and char2.char not in new_chars:
-#                 score = matrix[(char1.char, char2.char)]["score"]
-#                 sub = matrix[(char1.char, char2.char)]["sub"]
-#             elif char1 == char2:
-#                 score = None
-#                 sub = 2.0
-#             elif char1.char.isspace() or char2.char.isspace():
-#                 score = np.sum(char2.pix)
-#                 sub = -1.0 if score < 20 else -2.0
-#             else:
-#                 score = get_max_iou(char1.pix, char2.pix)
-#                 sub = get_sub(score)
-#
-#             matrix[(char1.char, char2.char)] = {"score": score, "sub": sub}
+def calc_scores(old_chars, new_chars, matrix, image_size, font):
+    """
+    Calculate character substitution values.
+
+    Substitution values go from 2 to -2. The cutoff values for converting a scores into
+    substitution values are _magic_ constants.
+    """
+    all_chars = [Char(c, image_size, font) for c in sorted(old_chars | new_chars)]
+
+    for i, char1 in tqdm(enumerate(all_chars)):
+        char1.center()
+
+        for char2 in all_chars[i:]:
+            if char1.char not in new_chars and char2.char not in new_chars:
+                score = matrix[(char1.char, char2.char)]["score"]
+                sub = matrix[(char1.char, char2.char)]["sub"]
+            elif char1 == char2:
+                score = None
+                sub = 2.0
+            elif char1.char.isspace() or char2.char.isspace():
+                score = np.sum(char2.pix)
+                sub = -1.0 if score < 20 else -2.0  # noqa: PLR2004
+            else:
+                score = get_max_iou(char1.pix, char2.pix)
+                sub = get_sub(score)
+
+            matrix[(char1.char, char2.char)] = {"score": score, "sub": sub}
 
 
-def get_sub(score):  # TODO(rafe): These values are all MAGIC
+def get_sub(score):  # TODO(rafe): These values are all way too MAGIC
     if score >= 0.7:  # noqa: PLR2004
         sub = 1.0
     elif score >= 0.5:  # noqa: PLR2004
@@ -170,7 +166,7 @@ def get_sub(score):  # TODO(rafe): These values are all MAGIC
 
 
 def get_max_iou(pix1, pix2):
-    """Get the max IOU of the two chars."""
+    """Get the max intersection over union of two chars."""
     max_iou = 0.0
     for y in range(pix2.shape[0]):
         for x in range(pix2.shape[1]):

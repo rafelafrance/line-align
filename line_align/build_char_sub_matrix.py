@@ -8,7 +8,9 @@ from line_align.pylib import char_sub_matrix as matrix
 
 def main():
     args = parse_args()
-    matrix.add_chars(args)
+    matrix.add_chars(
+        args.char_set, args.new_chars, args.image_size, args.font_path, args.font_size
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -29,7 +31,7 @@ def parse_args() -> argparse.Namespace:
     )
 
     arg_parser.add_argument(
-        "--chars",
+        "--new-chars",
         default=matrix.CHARS,
         metavar="CHARS",
         help="""A string containing the characters to add to the matrix. Characters
@@ -38,7 +40,7 @@ def parse_args() -> argparse.Namespace:
     )
 
     arg_parser.add_argument(
-        "--font",
+        "--font-path",
         type=Path,
         metavar="PATH",
         help="""A true type font file to use for calculations.
@@ -49,8 +51,17 @@ def parse_args() -> argparse.Namespace:
         "--font-size",
         type=int,
         metavar="SIZE",
-        default=matrix.BASE_FONT_SIZE,
-        help="""The font size to use for calculations. (default: %(default)s)""",
+        default=matrix.DEFAULT_FONT_SIZE,
+        help="""
+            The font size in pixels to use for calculations. (default: %(default)s)""",
+    )
+
+    arg_parser.add_argument(
+        "--image-size",
+        type=int,
+        metavar="SIZE",
+        default=matrix.DEFAULT_IMAGE_SIZE,
+        help="""Size of the image that contains a char. (default: %(default)s)""",
     )
 
     args = arg_parser.parse_args()
