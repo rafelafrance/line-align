@@ -44,4 +44,25 @@ E. MOJAVE DESERT, PROVIDENCE MTS.: canyon above
 
 ## Install
 
+You will need to have Python3.11+ installed, as well as pip, a package manager for Python.
+If you have `make` you can install the requirements into your python environment like so:
+
+```bash
+git clone https://github.com/rafelafrance/line-align.git
+cd line-align
+make install
+```
+
+Every time you run any script in this repository, you'll have to activate the virtual environment once at the start of your session.
+
+```bash
+cd line-align
+source .venv/bin/activate
+```
+
 ## Test
+
+There are tests which you can run like so:
+```bash
+make test
+```
